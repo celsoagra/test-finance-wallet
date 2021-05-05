@@ -9,11 +9,13 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
+@Builder
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor

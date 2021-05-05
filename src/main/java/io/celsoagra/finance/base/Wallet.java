@@ -1,24 +1,31 @@
 package io.celsoagra.finance.base;
 
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.SignatureException;
 import java.security.spec.ECGenParameterSpec;
 import java.util.Base64;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+import io.celsoagra.finance.util.CryptUtil;
+
 public class Wallet {
+    
     private PrivateKey privateKey;
     private PublicKey publicKey;
-    private boolean generated = false;
+    
+    public Wallet() {
+        generateKeyPair();       
+    }
 
     public String getPublicKeyAsString() {
         PublicKey key = getPublicKey();
@@ -28,19 +35,17 @@ public class Wallet {
     }
 
     public PublicKey getPublicKey() {
-        if (!generated) {
-            generateKeyPair();
-        }
-
         return publicKey;
     }
     
     public PrivateKey getPrivateKey() {
-        if (!generated) {
-            generateKeyPair();
-        }
-
         return privateKey;
+    }
+    
+    public String generateSignature(String reciepient, double value)
+            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
+        String data = CryptUtil.getStringFromKey(publicKey) + reciepient + Double.toString(value);
+        return Base64.getEncoder().encodeToString(CryptUtil.applyECDSASig(privateKey, data));
     }
 
     public void generateKeyPair() {
@@ -59,7 +64,6 @@ public class Wallet {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        generated = true;
     }
 
 }

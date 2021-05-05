@@ -16,7 +16,7 @@ import io.celsoagra.finance.dto.TransactionDTO;
 @FeignClient(name = "test-finance-client", url = "${app.client.url}")
 public interface TestFinanceClient {
 
-    @PostMapping(value = "/send", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/transaction", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> send(TransactionDTO dto);
 
     @PostMapping(value = "/balance", consumes = MediaType.APPLICATION_JSON_VALUE)
